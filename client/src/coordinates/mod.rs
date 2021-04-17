@@ -20,7 +20,7 @@ pub const PI: f64 = 3.1415926535897932384626433832795028841971693993751058209749
 
 /// Point in linear/cartesian space, measured in data units
 // PtLinear::zero(), or (0, 0, 0), is Earth's center
-#[derive(Default, Debug)]
+#[derive(Default)]
 pub struct PtLinear {
     x: i32,
     y: i32,
