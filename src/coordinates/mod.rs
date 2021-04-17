@@ -21,6 +21,7 @@ pub const PI: f64 =
 
 /// Point in linear/cartesian space, measured in data units
 // PtLinear::zero(), or (0, 0, 0), is Earth's center
+#[derive(Default, Debug)]
 pub struct PtLinear {
     x: i32,
     y: i32,
@@ -28,13 +29,6 @@ pub struct PtLinear {
 }
 
 impl PtLinear {
-    pub fn zero() -> PtLinear {
-        PtLinear {
-            x: 0,
-            y: 0,
-            z: 0,
-        }
-    }
 
     /// Converts linear coordinates to angular coordinates
     pub fn to_angular(&self) -> PtAngular {
@@ -70,18 +64,13 @@ impl fmt::Display for PtLinear {
     }
 }
 
-impl fmt::Debug for PtLinear {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        fmt::Display::fmt(&self, f)
-    }
-}
-
 /// Point in angular space (i.e. lat/long/alt), measured in data units
 // PtAngular::zero(), or (0N, 0E, 0), is MSL (1 Earth radius)
 // at 0 degrees Latitude, 0 degrees Longitude
 // +lat is North, -lat is South
 // +lon is East, -lon is West
 // +alt is above sea level, -alt is subsurface
+#[derive(Default)]
 pub struct PtAngular {
     lat: i32,
     lon: i32,
@@ -89,13 +78,6 @@ pub struct PtAngular {
 }
 
 impl PtAngular {
-    pub fn zero() -> PtAngular {
-        PtAngular {
-            lat: 0,
-            lon: 0,
-            alt: 0,
-        }
-    }
     
     /// Converts angular coordinates to linear coordinates
     pub fn to_linear(&self) -> PtLinear {
@@ -107,21 +89,17 @@ impl PtAngular {
     }
 
     pub fn to_string(&self) -> String {
-        let lat_char;
-        if self.lat < 0 {
-            lat_char = 'S';
-        }
-        else {
-            lat_char = 'N';
-        }
+        let lat_char = if self.lat < 0 {
+            'S'
+        } else {
+            'N'
+        };
 
-        let lon_char;
-        if self.lon < 0 {
-            lon_char = 'W';
-        }
-        else {
-            lon_char = 'E';
-        }
+        let lon_char = if self.lon < 0 {
+            'W'
+        } else {
+            'E'
+        };
 
         format!("({}{}, {}{}, {})",
             self.lat.abs() as f32 * INV_SCALE_ANG, lat_char,
@@ -175,7 +153,7 @@ mod tests {
 
     #[test]
     fn linear_to_angular () {
-        let lin_temp = PtLinear::zero();
+        let lin_temp = PtLinear::default();
         let ang_temp = PtAngular {
             lat: 0,
             lon: 0,
@@ -187,7 +165,7 @@ mod tests {
 
     #[test]
     fn angular_to_linear () {
-        let ang_temp = PtAngular::zero();
+        let ang_temp = PtAngular::default();
         let lin_temp = PtLinear {
             x: 0,
             y: 0,
@@ -220,3 +198,4 @@ mod tests {
     }
 
 }
+
