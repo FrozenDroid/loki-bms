@@ -1,8 +1,6 @@
 use iced::{
-    Color, HorizontalAlignment, Point, Rectangle, Size, VerticalAlignment, 
-    canvas::{
-        self, Cursor, Frame, Geometry, Path, Stroke, Text
-    }
+    canvas::{self, Cursor, Frame, Geometry, Path, Stroke, Text},
+    Color, HorizontalAlignment, Point, Rectangle, Size, VerticalAlignment,
 };
 
 #[derive(Default)]
@@ -14,7 +12,7 @@ pub struct ScopeState {
 }
 
 impl ScopeState {
-    pub fn new () -> ScopeState {
+    pub fn new() -> ScopeState {
         ScopeState {
             some_state_value: 9.0,
             ..ScopeState::default()
@@ -28,12 +26,7 @@ impl ScopeState {
 }
 
 impl<Message> canvas::Program<Message> for ScopeState {
-    fn draw(
-        &self,
-        bounds: Rectangle,
-        _: Cursor
-    ) -> Vec<Geometry> {
-        
+    fn draw(&self, bounds: Rectangle, _: Cursor) -> Vec<Geometry> {
         let background = self.background_cache.draw(bounds.size(), |frame| {
             let space = Path::rectangle(Point::new(0.0, 0.0), frame.size());
 
@@ -41,10 +34,7 @@ impl<Message> canvas::Program<Message> for ScopeState {
         });
 
         let midground = self.midground_cache.draw(bounds.size(), |frame| {
-            let circle = Path::circle(
-                frame.center(),
-                3.0 + (self.some_state_value * 0.12)
-            );
+            let circle = Path::circle(frame.center(), 3.0 + (self.some_state_value * 0.12));
             let stroke = Stroke {
                 color: Color::from_rgb(0.0, 0.0, 1.0),
                 width: 2.0,
@@ -57,7 +47,7 @@ impl<Message> canvas::Program<Message> for ScopeState {
 
         let foreground = self.foreground_cache.draw(bounds.size(), |frame| {
             let text = Text {
-                content : self.some_state_value.to_string(),
+                content: self.some_state_value.to_string(),
                 position: Point::new(5.0, 5.0),
                 color: Color::WHITE,
                 size: 9.0,

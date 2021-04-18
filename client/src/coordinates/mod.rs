@@ -16,8 +16,7 @@ pub const RADIUS_F: f32 = 6378137.0;
 pub const RADIUS_I: i32 = RADIUS_F as i32 * SCALE_LINEAR;
 
 /// Excessively long value of Pi for use in detailed angular conversions
-pub const PI: f64 = 
-3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421171;
+pub const PI: f64 = 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421171;
 
 /// Point in linear/cartesian space, measured in data units
 // PtLinear::zero(), or (0, 0, 0), is Earth's center
@@ -29,7 +28,6 @@ pub struct PtLinear {
 }
 
 impl PtLinear {
-
     /// Converts linear coordinates to angular coordinates
     pub fn to_angular(&self) -> PtAngular {
         PtAngular {
@@ -40,27 +38,30 @@ impl PtLinear {
     }
 
     pub fn to_string(&self) -> String {
-        format!( "({}, {}, {})",
+        format!(
+            "({}, {}, {})",
             self.x as f32 * INV_SCALE_LIN,
             self.y as f32 * INV_SCALE_LIN,
-            self.z as f32 * INV_SCALE_LIN)
+            self.z as f32 * INV_SCALE_LIN
+        )
     }
 }
 
 impl PartialEq for PtLinear {
     fn eq(&self, other: &Self) -> bool {
-        self.x == other.x
-        && self.y == other.y
-        && self.z == other.z
+        self.x == other.x && self.y == other.y && self.z == other.z
     }
 }
 
 impl fmt::Display for PtLinear {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "({}, {}, {})",
+        write!(
+            f,
+            "({}, {}, {})",
             self.x as f32 * INV_SCALE_LIN,
             self.y as f32 * INV_SCALE_LIN,
-            self.z as f32 * INV_SCALE_LIN)
+            self.z as f32 * INV_SCALE_LIN
+        )
     }
 }
 
@@ -78,7 +79,6 @@ pub struct PtAngular {
 }
 
 impl PtAngular {
-    
     /// Converts angular coordinates to linear coordinates
     pub fn to_linear(&self) -> PtLinear {
         PtLinear {
@@ -89,6 +89,29 @@ impl PtAngular {
     }
 
     pub fn to_string(&self) -> String {
+        let lat_char = if self.lat < 0 { 'S' } else { 'N' };
+
+        let lon_char = if self.lon < 0 { 'W' } else { 'E' };
+
+        format!(
+            "({}{}, {}{}, {})",
+            self.lat.abs() as f32 * INV_SCALE_ANG,
+            lat_char,
+            self.lon.abs() as f32 * INV_SCALE_ANG,
+            lon_char,
+            self.alt as f32 * INV_SCALE_LIN
+        )
+    }
+}
+
+impl PartialEq for PtAngular {
+    fn eq(&self, other: &Self) -> bool {
+        self.lat == other.lat && self.lon == other.lon && self.alt == other.alt
+    }
+}
+
+impl fmt::Display for PtAngular {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let lat_char = if self.lat < 0 {
             'S'
         } else {
@@ -101,43 +124,15 @@ impl PtAngular {
             'E'
         };
 
-        format!("({}{}, {}{}, {})",
-            self.lat.abs() as f32 * INV_SCALE_ANG, lat_char,
-            self.lon.abs() as f32 * INV_SCALE_ANG, lon_char,
-            self.alt as f32 * INV_SCALE_LIN)
-    }
-}
-
-impl PartialEq for PtAngular {
-    fn eq(&self, other: &Self) -> bool {
-        self.lat == other.lat
-        && self.lon == other.lon
-        && self.alt == other.alt
-    }
-}
-
-impl fmt::Display for PtAngular {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let lat_char;
-        if self.lat < 0 {
-            lat_char = 'S';
-        }
-        else {
-            lat_char = 'N';
-        }
-
-        let lon_char;
-        if self.lon < 0 {
-            lon_char = 'W';
-        }
-        else {
-            lon_char = 'E';
-        }
-
-        write!(f, "({}{}, {}{}, {})",
-            self.lat.abs() as f32 * INV_SCALE_ANG, lat_char,
-            self.lon.abs() as f32 * INV_SCALE_ANG, lon_char,
-            self.alt as f32 * INV_SCALE_LIN)
+        write!(
+            f,
+            "({}{}, {}{}, {})",
+            self.lat.abs() as f32 * INV_SCALE_ANG,
+            lat_char,
+            self.lon.abs() as f32 * INV_SCALE_ANG,
+            lon_char,
+            self.alt as f32 * INV_SCALE_LIN
+        )
     }
 }
 
@@ -152,7 +147,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn linear_to_angular () {
+    fn linear_to_angular() {
         let lin_temp = PtLinear::default();
         let ang_temp = PtAngular {
             lat: 0,
@@ -164,7 +159,7 @@ mod tests {
     }
 
     #[test]
-    fn angular_to_linear () {
+    fn angular_to_linear() {
         let ang_temp = PtAngular::default();
         let lin_temp = PtLinear {
             x: 0,
@@ -196,6 +191,4 @@ mod tests {
 
         assert_eq!(ang_temp.to_string(), "(10.101N, 10.101E, 10.11)");
     }
-
 }
-
